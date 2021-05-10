@@ -1,58 +1,109 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+  <div class="main">
+    <div class="calculator_result">{{ calculatorValue || 0}}</div>
+     <div class="container">
+       <div class="calculate_buttons" v-for="n in calculatorEls" :key="n" @click="input(n)">
+       <div class="button" :class="{'operator' : ['C', '*', '/', '-', '+', 'parseInt', '=', 'pow'].includes(n)}" @click="calculate(n)">{{n}}</div>
+     </div>
+     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
+  data () {
+    return {
+      calculatorValue: '',
+      calculatorEls: ['C', '*', '/', '-', 7, 8, 9, '+', 4, 5, 6, 'parseInt', 1, 2, 3, '=', 0, 'pow'],
+      operator: null,
+      previousValue: ''
+    }
+  },
+  methods: {
+    input (n) {
+      if ([1, 2, 3, 4, 5, 6, 7, 8, 9, 0].includes(n)) {
+        this.calculatorValue += n
+      }
+    },
+    calculate (n) {
+      if (n === 'C') {
+        this.calculatorValue = ''
+        this.operator = null
+      }
+      if (['parseInt', '*', '/', '-', '+', 'pow'].includes(n)) {
+        this.operator = n
+        this.previousValue = this.calculatorValue
+        this.calculatorValue = ''
+      }
+      if (n === '=') {
+        if (this.operator === '+') {
+          this.calculatorValue = Number(this.previousValue) + Number(this.calculatorValue)
+        }
+        if (this.operator === '-') {
+          this.calculatorValue = Number(this.previousValue) - Number(this.calculatorValue)
+        }
+        if (this.operator === '*') {
+          this.calculatorValue = Number(this.previousValue) * Number(this.calculatorValue)
+        }
+        if (this.operator === '/') {
+          this.calculatorValue = Number(this.previousValue) / Number(this.calculatorValue)
+        }
+        if (this.operator === 'parseInt') {
+          this.calculatorValue = parseInt(Number(this.previousValue) / Number(this.calculatorValue))
+        }
+        if (this.operator === 'pow') {
+          this.calculatorValue = Math.pow(Number(this.previousValue), Number(this.calculatorValue))
+        }
+        this.previousValue = ''
+        this.operator = null
+      }
+    }
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-h3 {
-  margin: 40px 0 0;
+.main{
+  width: 400px;
+   margin: 50px auto;
+  background: gray;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+.calculator_result{
+  text-align: right;
+  padding: 5px;
+  font-weight: bold;
+  color: white;
+  font-size: 25px;
+  margin: 5px;
+  background-color: yellowgreen;
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
+.calculate_buttons{
+  margin: 3px;
+  padding: 3px;
 }
-a {
-  color: #42b983;
+.button{
+width: 75px;
+height:35px;
+padding: 3px;
+background-color: violet;
+font-size: 18px;
+color: white;
+font-weight: bold;
+}
+.button:hover{
+  cursor: pointer;
+  background-color: aqua;
+}
+.container{
+      display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.operator{
+  background-color: blue;
 }
 </style>
