@@ -1,7 +1,11 @@
 <template>
   <div class="main">
-    <div class="calculator_result">{{ calculatorValue || 0}}</div>
-     <div class="container">
+    <input type="text" class="calculator_result" v-model.number="calculatorValue" value="0">
+    <div class="checkbox">
+      <input type="checkbox" class="check" id="checkbox" v-model="checked">
+      <label for="checkbox">отобразить экранную клавиатуру</label>
+    </div>
+     <div class="container" v-show="checked">
        <div class="calculate_buttons" v-for="n in calculatorEls" :key="n" @click="input(n)">
        <div class="button" :class="{'operator' : ['C', '*', '/', '-', '+', 'parseInt', '=', 'pow'].includes(n)}" @click="calculate(n)">{{n}}</div>
      </div>
@@ -16,7 +20,8 @@ export default {
       calculatorValue: '',
       calculatorEls: ['C', '*', '/', '-', 7, 8, 9, '+', 4, 5, 6, 'parseInt', 1, 2, 3, '=', 0, 'pow'],
       operator: null,
-      previousValue: ''
+      previousValue: '',
+      checked: ''
     }
   },
   methods: {
@@ -37,22 +42,22 @@ export default {
       }
       if (n === '=') {
         if (this.operator === '+') {
-          this.calculatorValue = Number(this.previousValue) + Number(this.calculatorValue)
+          this.calculatorValue = this.previousValue + this.calculatorValue
         }
         if (this.operator === '-') {
-          this.calculatorValue = Number(this.previousValue) - Number(this.calculatorValue)
+          this.calculatorValue = this.previousValue - this.calculatorValue
         }
         if (this.operator === '*') {
-          this.calculatorValue = Number(this.previousValue) * Number(this.calculatorValue)
+          this.calculatorValue = this.previousValue * this.calculatorValue
         }
         if (this.operator === '/') {
-          this.calculatorValue = Number(this.previousValue) / Number(this.calculatorValue)
+          this.calculatorValue = this.previousValue / this.calculatorValue
         }
         if (this.operator === 'parseInt') {
-          this.calculatorValue = parseInt(Number(this.previousValue) / Number(this.calculatorValue))
+          this.calculatorValue = parseInt(this.previousValue / this.calculatorValue)
         }
         if (this.operator === 'pow') {
-          this.calculatorValue = Math.pow(Number(this.previousValue), Number(this.calculatorValue))
+          this.calculatorValue = Math.pow(this.previousValue, this.calculatorValue)
         }
         this.previousValue = ''
         this.operator = null
@@ -105,5 +110,15 @@ font-weight: bold;
 }
 .operator{
   background-color: blue;
+}
+.checkbox{
+  padding: 3px;
+  background-color: yellowgreen;
+  font-size: 20px;
+  font-weight: bold;
+  margin: 5px;
+}
+.check{
+  display: none;
 }
 </style>
